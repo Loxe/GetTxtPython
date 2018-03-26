@@ -14,5 +14,5 @@ script: python ./都市奇门医生.py
 after_success:
   - git add .
   - git commit -m"getTXT"
-  - git push git@github.com:Loxe/GetTxtPython.git
+  - git push git@github.com:Loxe/GetTxtPython.git HEAD:master
   
