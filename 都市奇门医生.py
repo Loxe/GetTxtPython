@@ -84,10 +84,10 @@ def dealName(NAME):
   NAME = NAME.replace("章","");
   reg = re.compile(r'(?P<NUM>[0-9]\d*)');
   matched = re.search(reg, NAME);
-  NUM = str(matched.group('NUM').zfill(5));
+  NUM = str(matched.group('NUM'));
   NAME = NAME.replace(" ","");
   NAME = NAME.replace(NUM,"");
-  NAME = "第" + NUM + "章 " + NAME;
+  NAME = "第" + str(NUM.zfill(5)) + "章 " + NAME;
   return NAME;
 
 def writeText(fm,text,name):

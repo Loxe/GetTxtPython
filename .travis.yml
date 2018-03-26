@@ -12,10 +12,7 @@ before_install:
 script: python ./run.py
 
 after_success:
-  - git clone https://gitee.com/LoxE/novel.git ./novel
-  - cp -af ./txt/  ./novel/
-  - cd ./novel/
   - git add .
   - git commit -m "push Novel"
-  - git push -f git@gitee.com:LoxE/novel.git HEAD:master
+  - git push -f git@github.com:Loxe/GetTxtPython.git HEAD:TXT
   
