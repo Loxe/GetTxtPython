@@ -7,7 +7,9 @@ import re
 
 baseUrl = "http://m.sangwu.org/book/1/1852/";
 
+
 def downloadText():
+  log = [];
   # "r"   以读方式打开，只能读文件 ， 如果文件不存在，会发生异常      
   # "w"   以写方式打开，只能写文件， 如果文件不存在，创建该文件
   #       如果文件已存在，先清空，再打开文件
@@ -31,14 +33,17 @@ def downloadText():
   html = gethtml(baseUrl);
   reg = re.compile(r'<li><a href="(?P<URL>.+)">(?P<NAME>.+)<span></span></a></li>');
   res = reg.findall(html);
+  log.append("============目录============");
   print("============目录============");
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
+    log.append(NAME + " i = " + str(i));
     print(NAME + " i = " + str(i));
     pass
+  log.append("============目录============");
   print("============目录============"); 
-  for i in range(3336,len(res)):
+  for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
     if URL.endswith('http'):
@@ -50,9 +55,13 @@ def downloadText():
     fm.write("\n=========="+NAME+"==========\n");
     fm.write(text);
     fm.close();
+    log.append(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
     print(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
     pass
-  
+  log = '\n'.join(log);
+  fm = open("./txt/都市奇门医生/都市奇门医生.log",'w');
+  fm.write(log);
+  fm.close();
   return;
 
 def getText(html):
