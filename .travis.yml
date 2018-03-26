@@ -12,8 +12,7 @@ before_install:
 script: python ./run.py
 
 after_success:
-  - git clone git@gitee.com:LoxE/novel.git ./novel
-  - yes
+  - git clone https://gitee.com/LoxE/novel.git ./novel
   - cp -af ./txt/  ./novel/
   - cd ./novel/
   - git add .

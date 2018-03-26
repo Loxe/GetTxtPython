@@ -47,10 +47,10 @@ def downloadText():
     text = getText(gethtml(newUrl)); 
     #分章节创建文件
     fm = open("./txt/都市奇门医生/分章节/"+NAME,'w');
-    writeText(fm,text);
+    writeText(fm,text,NAME);
     #全集追加
     fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'a');
-    writeText(fm,text);
+    writeText(fm,text,NAME);
     printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i),log);
     pass
   log = '\n'.join(log);
@@ -69,8 +69,8 @@ def printList(res,log):
     pass
   printLog("============目录============",log);
 
-def writeText(fm,text):
-  fm.write("\n=========="+NAME+"==========\n");
+def writeText(fm,text,name):
+  fm.write("\n=========="+name+"==========\n");
   fm.write(text);
   fm.close();
 
