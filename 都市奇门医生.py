@@ -23,26 +23,20 @@ def downloadText():
   # "wb+" 以二进制写方式打开，可以读、写文件， 如果文件不存在，创建该文件
   #       如果文件已存在，先清空，再打开文件
 
-  isExists = os.path.exists('./txt/都市奇门医生');
+  isExists = os.path.exists('./txt/都市奇门医生/分章节');
   if not isExists:
-    os.makedirs('./txt/都市奇门医生');
+    os.makedirs('./txt/都市奇门医生/分章节');
     pass
 
-  fm = open("./txt/都市奇门医生/都市奇门医生.txt",'w');
+  fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'w');
   fm.close();
   html = gethtml(baseUrl);
   reg = re.compile(r'<li><a href="(?P<URL>.+)">(?P<NAME>.+)<span></span></a></li>');
   res = reg.findall(html);
-  log.append("============目录============");
-  print("============目录============");
-  for i in range(len(res)):
-    URL = res[i][0];
-    NAME = res[i][1];
-    log.append(NAME + " i = " + str(i));
-    print(NAME + " i = " + str(i));
-    pass
-  log.append("============目录============");
-  print("============目录============"); 
+  #打印目录
+  printList(res,log);
+
+  #获取小说章节
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
@@ -51,18 +45,38 @@ def downloadText():
     else:
       newUrl = baseUrl+URL;
     text = getText(gethtml(newUrl)); 
-    fm = open("./txt/都市奇门医生/都市奇门医生.txt",'a');
-    fm.write("\n=========="+NAME+"==========\n");
-    fm.write(text);
-    fm.close();
-    log.append(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
-    print(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
+    #分章节创建文件
+    fm = open("./txt/都市奇门医生/分章节/"+NAME,'w');
+    writeText(fm,text);
+    #全集追加
+    fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'a');
+    writeText(fm,text);
+    printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i),log);
     pass
   log = '\n'.join(log);
   fm = open("./txt/都市奇门医生/都市奇门医生.log",'w');
   fm.write(log);
   fm.close();
   return;
+
+def printList(res,log):
+  printLog("============目录============",log);
+  for i in range(len(res)):
+    URL = res[i][0];
+    NAME = res[i][1];
+    log.append(NAME + " i = " + str(i));
+    print(NAME + " i = " + str(i));
+    pass
+  printLog("============目录============",log);
+
+def writeText(fm,text):
+  fm.write("\n=========="+NAME+"==========\n");
+  fm.write(text);
+  fm.close();
+
+def printLog(logStr,logArr):
+  print(logStr);
+  logArr.append(logStr);
 
 def getText(html):
   reg = re.compile(r'<div class="txt" id="txt">(?P<TEXT>.*)</div>');
