@@ -21,7 +21,7 @@ def downloadText():
   # "wb+" 以二进制写方式打开，可以读、写文件， 如果文件不存在，创建该文件
   #       如果文件已存在，先清空，再打开文件
 
-  fm = open("./都市奇门医生.txt",'w');
+  fm = open("./txt/都市奇门医生.txt",'w');
   fm.close();
   html = gethtml(baseUrl);
   reg = re.compile(r'<li><a href="(?P<URL>.+)">(?P<NAME>.+)<span></span></a></li>');
@@ -41,7 +41,7 @@ def downloadText():
     else:
       newUrl = baseUrl+URL;
     text = getText(gethtml(newUrl)); 
-    fm = open("./都市奇门医生.txt",'a');
+    fm = open("./txt/都市奇门医生.txt",'a');
     fm.write("\n=========="+NAME+"==========\n");
     fm.write(text);
     fm.close();

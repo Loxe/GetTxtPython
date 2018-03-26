@@ -9,7 +9,7 @@ before_install:
   - git config --global user.email i@iloxe.com
 
 # command to run tests
-script: python ./都市奇门医生.py
+script: python ./run.py
 
 after_success:
   - git add .
