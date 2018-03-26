@@ -37,7 +37,7 @@ def downloadText():
   printList(res,log);
 
   #获取小说章节
-  for i in range(len(res)):
+  for i in range(1,10):
 
     URL = res[i][0];
     NAME = res[i][1];
@@ -84,7 +84,7 @@ def dealName(NAME):
   NAME = NAME.replace("章","");
   reg = re.compile(r'(?P<NUM>[0-9]\d*)');
   matched = re.search(reg, NAME);
-  NUM = str(matched.group('NUM'));
+  NUM = str(matched.group('NUM').zfill(5));
   NAME = NAME.replace(" ","");
   NAME = NAME.replace(NUM,"");
   NAME = "第" + NUM + "章 " + NAME;
