@@ -1,0 +1,22 @@
+language: python
+python:
+  - "3.5"
+#
+before_install:
+  - echo $SSH_KEY | base64 --decode > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - git config --global user.name "小饼"
+  - git config --global user.email i@iloxe.com
+
+install:
+  python ./都市奇门医生.py
+
+before_script:
+  
+
+# command to run tests
+script:
+  
+
+after_success:
+  
