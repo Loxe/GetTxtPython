@@ -8,18 +8,13 @@ before_install:
   - git config --global user.name "小饼"
   - git config --global user.email i@iloxe.com
 
-install:
-  - python ./都市奇门医生.py
-  - git add .
-  - git commit -m"getTXT"
-  - git push
-
-before_script:
-
 
 # command to run tests
 script:
-  - make tests  
+  - python ./都市奇门医生.py
 
 after_success:
+  - git add .
+  - git commit -m"getTXT"
+  - git push
   
