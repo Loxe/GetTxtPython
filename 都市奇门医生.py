@@ -37,7 +37,7 @@ def downloadText():
   printList(res,log);
 
   #获取小说章节
-  for i in range(1,10):
+  for i in range(len(res)):
 
     URL = res[i][0];
     NAME = res[i][1];
@@ -114,6 +114,7 @@ def getText(html):
     text = text.replace("readx();","");
     text = re.sub("[\\|].*[\\|]","",text);
     text = re.sub("www.*cc","",text);
+    text = text.replace("                            ","　　    ");
     pass
   except Exception as e:
     print(e);
