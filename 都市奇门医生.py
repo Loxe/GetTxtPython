@@ -5,7 +5,7 @@ import urllib.request
 import os,sys
 import re
 
-baseUrl = "http://m.sangwu.org/book/1/1852/";
+baseUrl = "https://www.23us.cc/html/81/81001/";
 dict = {}
 
 def downloadText():
@@ -30,8 +30,8 @@ def downloadText():
 
   fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'w');
   fm.close();
-  html = gethtml(baseUrl);
-  reg = re.compile(r'<li><a href="(?P<URL>.+)">(?P<NAME>.+)<span></span></a></li>');
+  html = gethtml(baseUrl,0);
+  reg = re.compile(r'<a style=""=style="" href="(?P<URL>.+)">(?P<NAME>.+)</a>');
   res = reg.findall(html);
   #打印目录
   printList(res,log);
@@ -41,14 +41,14 @@ def downloadText():
 
     URL = res[i][0];
     NAME = res[i][1];
-    NAME = "第"+ NAME.split("第")[-1];
+    NAME = dealName(NAME);
 
     if URL.endswith('http'):
       newUrl = URL;
     else:
       newUrl = baseUrl+URL;
     
-    text = getText(gethtml(newUrl)); 
+    text = getText(gethtml(newUrl,0)); 
     if text == "" and text is None:
       continue;
       pass
@@ -72,11 +72,23 @@ def printList(res,log):
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
-    NAME = "第"+ NAME.split("第")[-1];
+    NAME = dealName(NAME);
+
     log.append(NAME + " i = " + str(i));
     print(NAME + " i = " + str(i));
     pass
   printLog("============目录============",log);
+
+def dealName(NAME):
+  NAME = NAME.replace("第","");
+  NAME = NAME.replace("章","");
+  reg = re.compile(r'(?P<NUM>[0-9]\d*)');
+  matched = re.search(reg, NAME);
+  NUM = str(matched.group('NUM'));
+  NAME = NAME.replace(" ","");
+  NAME = NAME.replace(NUM,"");
+  NAME = "第" + NUM + "章 " + NAME;
+  return NAME;
 
 def writeText(fm,text,name):
   fm.write("\n=========="+name+"==========\n");
@@ -89,19 +101,22 @@ def printLog(logStr,logArr):
 
 def getText(html):
   try:
-    reg = re.compile(r'<div class="txt" id="txt">(?P<TEXT>.*)</div>');
+    reg = re.compile(r'<div.*?id=[\'""]content[\'\"\"]>(?P<TEXT>[\W\w]*?)</div>');
     matched = re.search(reg, html);
     if matched is None:
       return "";
       pass
+
+
     text = matched.group('TEXT');
-    text = text.replace("&nbsp;"," ");
-    text = text.replace("<br />","\n");
-    text = text.replace("【如遇网页无法打开,请开启手机的飞行模式，然后关闭,换个IP即可】","");
-    text = text.replace("【其他情况无法打开网站,请开启手机的飞行模式，然后关闭,换个IP即可】","");
-    text = text.replace("<font color=red><b>【请记住本站网址：m.sangwu.org】UC浏览器用户如遇到无法访问，请把设置里面极速省流的【云加速】关闭,</b></font>","");
+    text = re.sub("<br\s*/>", "\n", text);
+    text = re.sub("&nbsp;", " ", text);
+    text = text.replace("readx();","");
+    text = re.sub("[\\|].*[\\|]","",text);
+    text = re.sub("www.*cc","",text);
     pass
   except Exception as e:
+    print(e);
     text = "";
     raise
   else:
@@ -111,13 +126,16 @@ def getText(html):
   
   return text;
 
-def gethtml(url): 
+def gethtml(url,count): 
   try:
     response = urllib.request.urlopen(url) 
-    html = response.read().decode('gbk')
+    html = response.read().decode('utf-8')
     pass
   except Exception as e:
-    html = "";
+    if count >= 2:
+      return "";
+      pass
+    html = gethtml(url,count+1);
     pass
   else:
     pass
