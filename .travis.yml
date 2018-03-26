@@ -13,6 +13,7 @@ script: python ./run.py
 
 after_success:
   - git clone git@gitee.com:LoxE/novel.git ./novel
+  - yes
   - cp -af ./txt/  ./novel/
   - cd ./novel/
   - git add .
