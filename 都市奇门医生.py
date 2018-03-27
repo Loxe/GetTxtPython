@@ -94,6 +94,8 @@ def mergeTxt(itemTxtPath,allTxtPath):
       itemFm = open(itemTxtPath+p,"r");
       itemTxt = itemFm.read();
       itemFm.close();
+      itemTxt = re.sub("[^=]第.*", "", itemTxt);
+      itemTxt = itemTxt.replace("==========","");
       allFm = open(allTxtPath,'a');
       allFm.write(itemTxt);
       allFm.close();
