@@ -24,24 +24,30 @@ def downloadText():
   #       如果文件已存在，先清空，再打开文件
 
   isExists = os.path.exists('./txt/都市奇门医生/分章节');
+  isFrist = False;
   if not isExists:
+    isFrist = True;
     os.makedirs('./txt/都市奇门医生/分章节');
     pass
 
-  fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'w');
-  fm.close();
   html = gethtml(baseUrl,0);
   reg = re.compile(r'<a style=""=style="" href="(?P<URL>.+)">(?P<NAME>.+)</a>');
   res = reg.findall(html);
   #打印目录
   printList(res,log);
-
   #获取小说章节
   for i in range(len(res)):
 
     URL = res[i][0];
     NAME = res[i][1];
     NAME = dealName(NAME);
+    #分章节创建文件
+    itemTxtPath = "./txt/都市奇门医生/分章节/"+NAME+".txt";
+    #文件存在(内容不为空) 并且 不是第一次就强制写入
+    if judgeItemTxt(itemTxtPath) and not isFrist :
+      printLog(itemTxtPath + ">>文件已存在",log);
+      continue;
+      pass
 
     if URL.endswith('http'):
       newUrl = URL;
@@ -52,19 +58,47 @@ def downloadText():
     if text == "" and text is None:
       continue;
       pass
-    #分章节创建文件
-    fm = open("./txt/都市奇门医生/分章节/"+NAME,'w');
-    writeText(fm,text,NAME);
-    #全集追加
-    fm = open("./txt/都市奇门医生/都市奇门医生-ALL.txt",'a');
+    fm = open(itemTxtPath,'w');
     writeText(fm,text,NAME);
     printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i),log);
     pass
+
+  mergeTxt("./txt/都市奇门医生/分章节/","./txt/都市奇门医生/都市奇门医生-ALL.txt");
+  printLog("合并文件 >>> ./txt/都市奇门医生/都市奇门医生-ALL.txt",log);
   printLog("100%",log);
   log = '\n'.join(log);
   fm = open("./txt/都市奇门医生/都市奇门医生.log",'w');
   fm.write(log);
   fm.close();
+  return;
+
+def judgeItemTxt(itemTxtPath):
+  itemTxtExists = os.path.exists(itemTxtPath);
+  if itemTxtExists:
+    fm = open(itemTxtPath,'r');
+    itemTxt = fm.read();
+    return len(itemTxt) != 0;
+  else:
+    return False;
+    pass
+
+
+def mergeTxt(itemTxtPath,allTxtPath):
+  allFm = open(allTxtPath,'w');
+  allFm.close();
+  path = os.listdir(itemTxtPath);
+  path.sort();
+  for p in path:
+    arr = os.path.splitext(p);
+    if arr[-1].lower() == ".txt":
+      itemFm = open(itemTxtPath+p,"r");
+      itemTxt = itemFm.read();
+      itemFm.close();
+      allFm = open(allTxtPath,'a');
+      allFm.write(itemTxt);
+      allFm.close();
+      pass
+    pass
   return;
 
 def printList(res,log):
@@ -78,6 +112,7 @@ def printList(res,log):
     print(NAME + " i = " + str(i));
     pass
   printLog("============目录============",log);
+  return;
 
 def dealName(NAME):
   NAME = NAME.replace("第","");

@@ -14,5 +14,5 @@ script: python ./run.py
 after_success:
   - git add .
   - git commit -m "push Novel"
-  - git push -f git@github.com:Loxe/GetTxtPython.git HEAD:TXT
+  - git push -f git@github.com:Loxe/GetTxtPython.git HEAD:master
   
