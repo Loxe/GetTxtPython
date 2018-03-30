@@ -14,6 +14,7 @@ before_install:
 script: python ./run.py
 
 after_success:
+  - rm -r .travis.yml
   - rm -f -r branch_txt
   - git add .
   - git commit -m "push Novel"
