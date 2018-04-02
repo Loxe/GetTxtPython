@@ -5,7 +5,7 @@ import urllib.request
 import os,sys
 import re
 
-baseUrl = "https://www.23us.cc/html/81/81001/";
+baseUrl = "https://www.x23us.com/html/55/55835/";
 dict = {}
 
 def downloadText():
@@ -31,7 +31,13 @@ def downloadText():
     pass
 
   html = gethtml(baseUrl,0);
-  reg = re.compile(r'<a style=""=style="" href="(?P<URL>.+)">(?P<NAME>.+)</a>');
+  #进一步处理HTML
+  reg = re.compile(r'<table.*id="at">(?P<HTML>[\w\W]*)</table>');
+  matched = re.search(reg, html);
+  html = matched.group('HTML');
+
+  #匹配目录文字
+  reg = re.compile(r'<a href="(?P<URL>.+?)">(?P<NAME>.+?)</a>');
   res = reg.findall(html);
   #打印目录
   printList(res,log);
@@ -41,10 +47,13 @@ def downloadText():
     URL = res[i][0];
     NAME = res[i][1];
     NAME = dealName(NAME);
+    if URL is None or NAME is None or matched is None:
+      continue;
+      pass
     #分章节创建文件
     itemTxtPath = "./txt/都市奇门医生/分章节/"+NAME+".txt";
     #文件存在(内容不为空) 并且 不是第一次就强制写入
-    if judgeItemTxt(itemTxtPath) and not isFrist :
+    if judgeItemTxt(itemTxtPath,NAME) and not isFrist :
       printLog(itemTxtPath + ">>文件已存在",log);
       continue;
       pass
@@ -72,12 +81,12 @@ def downloadText():
   fm.close();
   return;
 
-def judgeItemTxt(itemTxtPath):
+def judgeItemTxt(itemTxtPath,NAME):
   itemTxtExists = os.path.exists(itemTxtPath);
   if itemTxtExists:
     fm = open(itemTxtPath,'r');
     itemTxt = fm.read();
-    return len(itemTxt) != 0;
+    return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n";
   else:
     return False;
     pass
@@ -108,8 +117,12 @@ def printList(res,log):
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
+    reg = re.compile(r'(?P<ZHANG>第\d*章.*)');
+    matched = re.search(reg, NAME);
+    if URL is None or NAME is None or matched is None:
+      continue;
+      pass
     NAME = dealName(NAME);
-
     log.append(NAME + " i = " + str(i));
     print(NAME + " i = " + str(i));
     pass
@@ -117,13 +130,26 @@ def printList(res,log):
   return;
 
 def dealName(NAME):
-  NAME = NAME.replace("第","");
-  NAME = NAME.replace("章","");
+  print(NAME);
+
+  reg = re.compile(r'(?P<ZHANG>第\d*章.*)');
+  matched = re.search(reg, NAME);
+  if not matched is None:
+    NAME = str(matched.group('ZHANG'));
+    pass
+
   reg = re.compile(r'(?P<NUM>[0-9]\d*)');
   matched = re.search(reg, NAME);
-  NUM = str(matched.group('NUM'));
+  NUM = "";
+  if not matched is None:
+    NUM = str(matched.group('NUM'));
+    NAME = NAME.replace(NUM,"");
+    pass
+
+  NAME = NAME.replace("第","");
+  NAME = NAME.replace("章","");
   NAME = NAME.replace(" ","");
-  NAME = NAME.replace(NUM,"");
+
   NAME = "第" + str(NUM.zfill(5)) + "章 " + NAME;
   return NAME;
 
@@ -137,21 +163,17 @@ def printLog(logStr,logArr):
   logArr.append(logStr);
 
 def getText(html):
+
   try:
-    reg = re.compile(r'<div.*?id=[\'""]content[\'\"\"]>(?P<TEXT>[\W\w]*?)</div>');
+    reg = re.compile(r'<dd.*id="contents">(?P<TEXT>[\w\W]*)</dd>[^<]');
     matched = re.search(reg, html);
     if matched is None:
       return "";
       pass
 
-
-    text = matched.group('TEXT');
+    text = matched.group('TEXT');  
     text = re.sub("<br\s*/>", "\n", text);
     text = re.sub("&nbsp;", " ", text);
-    text = text.replace("readx();","");
-    text = re.sub("[\\|].*[\\|]","",text);
-    text = re.sub("www.*cc","",text);
-    text = text.replace("                            ","　　    ");
     pass
   except Exception as e:
     print(e);
@@ -167,7 +189,7 @@ def getText(html):
 def gethtml(url,count): 
   try:
     response = urllib.request.urlopen(url) 
-    html = response.read().decode('utf-8')
+    html = response.read().decode('gbk')
     pass
   except Exception as e:
     if count >= 2:
