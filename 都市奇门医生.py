@@ -86,6 +86,7 @@ def judgeItemTxt(itemTxtPath,NAME):
   if itemTxtExists:
     fm = open(itemTxtPath,'r');
     itemTxt = fm.read();
+    fm.close();
     return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n";
   else:
     return False;
