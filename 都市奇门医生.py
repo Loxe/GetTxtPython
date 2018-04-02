@@ -46,6 +46,8 @@ def downloadText():
     URL = res[i][0];
     NAME = res[i][1];
     NAME = dealName(NAME);
+    reg = re.compile(r'(?P<ZHANG>第.*章.*)');
+    matched = re.search(reg, NAME);
     if URL is None or NAME is None or matched is None:
       continue;
       pass
@@ -119,7 +121,7 @@ def printList(res):
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
-    reg = re.compile(r'(?P<ZHANG>第\d*章.*)');
+    reg = re.compile(r'(?P<ZHANG>第.*章.*)');
     matched = re.search(reg, NAME);
     if URL is None or NAME is None or matched is None:
       continue;
@@ -132,7 +134,7 @@ def printList(res):
   return;
 
 def dealName(NAME):
-  reg = re.compile(r'(?P<ZHANG>第\d*章.*)');
+  reg = re.compile(r'(?P<ZHANG>第.*章.*)');
   matched = re.search(reg, NAME);
   if not matched is None:
     NAME = str(matched.group('ZHANG'));
