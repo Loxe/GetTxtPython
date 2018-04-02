@@ -130,8 +130,6 @@ def printList(res,log):
   return;
 
 def dealName(NAME):
-  print(NAME);
-
   reg = re.compile(r'(?P<ZHANG>第\d*章.*)');
   matched = re.search(reg, NAME);
   if not matched is None:
