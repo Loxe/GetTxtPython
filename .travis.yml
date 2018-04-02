@@ -8,6 +8,7 @@ before_install:
   - git config --global user.name "小饼"
   - git config --global user.email i@iloxe.com
   - git clone -b TXT git@github.com:Loxe/GetTxtPython.git branch_txt
+  - mkdir -p branch_txt/txt
   - cp -r branch_txt/txt ./txt
 
 # command to run tests
