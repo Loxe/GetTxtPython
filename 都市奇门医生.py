@@ -5,7 +5,7 @@ import urllib.request
 import os,sys
 import re
 
-baseUrl = "https://www.x23us.com/html/55/55835/";
+baseUrl = "https://www.biquge.cc/html/129/129930/";
 log = [];
 def downloadText():
   global log;
@@ -31,12 +31,12 @@ def downloadText():
 
   html = gethtml(baseUrl,0);
   #进一步处理HTML
-  reg = re.compile(r'<table.*id="at">(?P<HTML>[\w\W]*)</table>');
+  reg = re.compile(r'<div id="list">(?P<HTML>[\w\W]*)</div>');
   matched = re.search(reg, html);
   html = matched.group('HTML');
 
   #匹配目录文字
-  reg = re.compile(r'<a href="(?P<URL>.+?)">(?P<NAME>.+?)</a>');
+  reg = re.compile(r'<a.*href="(?P<URL>.+?)">(?P<NAME>.+?)</a>');
   res = reg.findall(html);
   #打印目录
   printList(res);
@@ -168,15 +168,22 @@ def printLog(logStr):
 def getText(html):
 
   try:
-    reg = re.compile(r'<dd.*id="contents">(?P<TEXT>[\w\W]*)</dd>[^<]');
+    reg = re.compile(r'<div.*id="content">(?P<TEXT>[\w\W]*?)</div>[^<]');
     matched = re.search(reg, html);
     if matched is None:
       return "";
       pass
 
-    text = matched.group('TEXT');  
-    text = re.sub("<br\s*/>", "\n", text);
+
+    text = matched.group('TEXT'); 
+
+    text = text.replace("&lt;","<");
+    text = text.replace("&gt;",">");
+    text = re.sub("<br\s*[/]?>", "\n", text);
     text = re.sub("&nbsp;", " ", text);
+    text = re.sub("<.*?>","",text);
+    text = re.sub("热门推荐","",text);
+    text = re.sub("\w+\(\)[;]","",text);
     pass
   except Exception as e:
     print(e);
@@ -192,7 +199,7 @@ def getText(html):
 def gethtml(url,count): 
   try:
     response = urllib.request.urlopen(url) 
-    html = response.read().decode('gbk')
+    html = response.read().decode('utf-8')
     pass
   except Exception as e:
     if count >= 2:
