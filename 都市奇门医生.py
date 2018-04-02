@@ -6,10 +6,8 @@ import os,sys
 import re
 
 baseUrl = "https://www.x23us.com/html/55/55835/";
-dict = {}
-
+log = [];
 def downloadText():
-  log = [];
   # "r"   以读方式打开，只能读文件 ， 如果文件不存在，会发生异常      
   # "w"   以写方式打开，只能写文件， 如果文件不存在，创建该文件
   #       如果文件已存在，先清空，再打开文件
@@ -40,7 +38,7 @@ def downloadText():
   reg = re.compile(r'<a href="(?P<URL>.+?)">(?P<NAME>.+?)</a>');
   res = reg.findall(html);
   #打印目录
-  printList(res,log);
+  printList(res);
   #获取小说章节
   for i in range(len(res)):
 
@@ -54,7 +52,7 @@ def downloadText():
     itemTxtPath = "./txt/都市奇门医生/分章节/"+NAME+".txt";
     #文件存在(内容不为空) 并且 不是第一次就强制写入
     if judgeItemTxt(itemTxtPath,NAME) and not isFrist :
-      printLog(itemTxtPath + ">>文件已存在",log);
+      printLog(itemTxtPath + ">>文件已存在");
       continue;
       pass
 
@@ -63,18 +61,15 @@ def downloadText():
     else:
       newUrl = baseUrl+URL;
     
-    text = getText(gethtml(newUrl,0)); 
-    if text == "" and text is None:
-      continue;
-      pass
+    text = getText(gethtml(newUrl,0));
     fm = open(itemTxtPath,'w');
     writeText(fm,text,NAME);
-    printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i),log);
+    printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
     pass
 
   mergeTxt("./txt/都市奇门医生/分章节/","./txt/都市奇门医生/都市奇门医生-ALL.txt");
-  printLog("合并文件 >>> ./txt/都市奇门医生/都市奇门医生-ALL.txt",log);
-  printLog("100%",log);
+  printLog("合并文件 >>> ./txt/都市奇门医生/都市奇门医生-ALL.txt");
+  printLog("100%");
   log = '\n'.join(log);
   fm = open("./txt/都市奇门医生/都市奇门医生.log",'w');
   fm.write(log);
@@ -94,6 +89,7 @@ def judgeItemTxt(itemTxtPath,NAME):
 
 
 def mergeTxt(itemTxtPath,allTxtPath):
+  global log;
   allFm = open(allTxtPath,'w');
   allFm.close();
   path = os.listdir(itemTxtPath);
@@ -106,6 +102,9 @@ def mergeTxt(itemTxtPath,allTxtPath):
       itemFm.close();
       itemTxt = re.sub("[^=]第.*", "", itemTxt);
       itemTxt = itemTxt.replace("==========","");
+      if len(itemTxt)<100 :
+        printLog(itemTxtPath + ">>文件可能存在问题!!");
+        pass
       allFm = open(allTxtPath,'a');
       allFm.write(itemTxt);
       allFm.close();
@@ -113,8 +112,9 @@ def mergeTxt(itemTxtPath,allTxtPath):
     pass
   return;
 
-def printList(res,log):
-  printLog("============目录============",log);
+def printList(res):
+  global log;
+  printLog("============目录============");
   for i in range(len(res)):
     URL = res[i][0];
     NAME = res[i][1];
@@ -127,7 +127,7 @@ def printList(res,log):
     log.append(NAME + " i = " + str(i));
     print(NAME + " i = " + str(i));
     pass
-  printLog("============目录============",log);
+  printLog("============目录============");
   return;
 
 def dealName(NAME):
@@ -157,9 +157,10 @@ def writeText(fm,text,name):
   fm.write(text);
   fm.close();
 
-def printLog(logStr,logArr):
+def printLog(logStr):
+  global log;
   print(logStr);
-  logArr.append(logStr);
+  log.append(logStr);
 
 def getText(html):
 
