@@ -8,6 +8,7 @@ import re
 baseUrl = "https://www.x23us.com/html/55/55835/";
 log = [];
 def downloadText():
+  global log;
   # "r"   以读方式打开，只能读文件 ， 如果文件不存在，会发生异常      
   # "w"   以写方式打开，只能写文件， 如果文件不存在，创建该文件
   #       如果文件已存在，先清空，再打开文件
@@ -70,9 +71,9 @@ def downloadText():
   mergeTxt("./txt/都市奇门医生/分章节/","./txt/都市奇门医生/都市奇门医生-ALL.txt");
   printLog("合并文件 >>> ./txt/都市奇门医生/都市奇门医生-ALL.txt");
   printLog("100%");
-  log = '\n'.join(log);
+  logStr = '\n'.join(log);
   fm = open("./txt/都市奇门医生/都市奇门医生.log",'w');
-  fm.write(log);
+  fm.write(logStr);
   fm.close();
   return;
 
