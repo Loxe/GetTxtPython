@@ -104,6 +104,7 @@ def mergeTxt(itemTxtPath,allTxtPath):
       itemFm = open(itemTxtPath+p,"r");
       itemTxt = itemFm.read();
       itemFm.close();
+      itemTxt = re.sub("[^=]第.*章.+[\n]","",itemTxt);
       itemTxt = re.sub("=+第.*=", arr[0], itemTxt);
       # itemTxt = itemTxt.replace("==========","");
       if len(itemTxt)<100 :
