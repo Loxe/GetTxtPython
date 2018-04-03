@@ -100,11 +100,12 @@ def mergeTxt(itemTxtPath,allTxtPath):
   for p in path:
     arr = os.path.splitext(p);
     if arr[-1].lower() == ".txt":
+
       itemFm = open(itemTxtPath+p,"r");
       itemTxt = itemFm.read();
       itemFm.close();
-      itemTxt = re.sub("[^=]第.*", "", itemTxt);
-      itemTxt = itemTxt.replace("==========","");
+      itemTxt = re.sub("^=+第.*=", arr[0], itemTxt);
+      # itemTxt = itemTxt.replace("==========","");
       if len(itemTxt)<100 :
         printLog(itemTxtPath + ">>文件可能存在问题!!");
         pass
