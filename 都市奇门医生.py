@@ -53,11 +53,6 @@ def downloadText():
       pass
     #分章节创建文件
     itemTxtPath = "./txt/都市奇门医生/分章节/"+NAME+".txt";
-    #文件存在(内容不为空) 并且 不是第一次就强制写入
-    if judgeItemTxt(itemTxtPath,NAME) and not isFrist :
-      printLog(itemTxtPath + ">>文件已存在");
-      continue;
-      pass
 
     if URL.endswith('http'):
       newUrl = URL;
@@ -65,6 +60,16 @@ def downloadText():
       newUrl = baseUrl+URL;
     
     text = getText(gethtml(newUrl,0));
+
+
+    #文件存在(内容不为空) 并且 不是第一次就强制写入
+    #判断文件已存在就不覆盖
+    if judgeItemTxt(itemTxtPath,NAME,text) and not isFrist :
+      printLog(itemTxtPath + ">>文件已存在");
+      continue;
+      pass
+
+
     fm = open(itemTxtPath,'w');
     writeText(fm,text,NAME);
     printLog(str('%.2f' % (float(i)/float(len(res)) * 100)) + "% => "+NAME + "i="+str(i));
@@ -79,13 +84,13 @@ def downloadText():
   fm.close();
   return;
 
-def judgeItemTxt(itemTxtPath,NAME):
+def judgeItemTxt(itemTxtPath,NAME,newText):
   itemTxtExists = os.path.exists(itemTxtPath);
   if itemTxtExists:
     fm = open(itemTxtPath,'r');
     itemTxt = fm.read();
     fm.close();
-    return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n";
+    return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n" and itemTxt == newText;
   else:
     return False;
     pass
