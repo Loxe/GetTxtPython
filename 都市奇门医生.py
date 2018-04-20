@@ -95,7 +95,7 @@ def judgeValidItemTxt(itemTxtPath,NAME):
     return False;
     pass
 
-def judgeItemTxtEqualNewTxt(itemTxtPath,newTxt)
+def judgeItemTxtEqualNewTxt(itemTxtPath,newTxt):
   itemTxtExists = os.path.exists(itemTxtPath);
   if itemTxtExists:
     fm = open(itemTxtPath,'r');
