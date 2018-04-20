@@ -64,7 +64,7 @@ def downloadText():
 
     #文件存在(内容不为空) 并且 不是第一次就强制写入
     #判断文件已存在就不覆盖
-    if judgeItemTxt(itemTxtPath,NAME,text) and not isFrist :
+    if judgeValidItemTxt(itemTxtPath,NAME) and not isFrist and judgeItemTxtEqualNewTxt(itemTxtPath,text):
       printLog(itemTxtPath + ">>文件已存在");
       continue;
       pass
@@ -84,17 +84,26 @@ def downloadText():
   fm.close();
   return;
 
-def judgeItemTxt(itemTxtPath,NAME,newText):
+def judgeValidItemTxt(itemTxtPath,NAME):
   itemTxtExists = os.path.exists(itemTxtPath);
   if itemTxtExists:
     fm = open(itemTxtPath,'r');
     itemTxt = fm.read();
     fm.close();
-    return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n" and itemTxt == newText;
+    return len(itemTxt) != 0 and itemTxt != "\n=========="+NAME+"==========\n";
   else:
     return False;
     pass
 
+def judgeItemTxtEqualNewTxt(itemTxtPath,newTxt)
+  itemTxtExists = os.path.exists(itemTxtPath);
+  if itemTxtExists:
+    fm = open(itemTxtPath,'r');
+    itemTxt = fm.read();
+    fm.close();
+    return  itemTxt == newTxt;
+    pass 
+  return False;
 
 def mergeTxt(itemTxtPath,allTxtPath):
   global log;
