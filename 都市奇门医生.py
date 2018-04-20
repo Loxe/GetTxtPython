@@ -23,9 +23,8 @@ def downloadText():
   #       如果文件已存在，先清空，再打开文件
 
   isExists = os.path.exists('./txt/都市奇门医生/分章节');
-  isFrist = False;
+  isFrist = True;
   if not isExists:
-    isFrist = True;
     os.makedirs('./txt/都市奇门医生/分章节');
     pass
 
